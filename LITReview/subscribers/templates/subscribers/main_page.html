@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pages de connexion</title>
+    <link rel="stylesheet" href="{% static 'subscribers/style.css'%}">
+</head>
+<body>
+    <header>
+        <h2>Bienvenue sur LITReview !</h2>
+        <h1>LITReview</h1>
+    </header>
+
+    <section>
+        {% block mon_contenu %}
+        {% endblock %}
+    </section>
+</body>
+</html>

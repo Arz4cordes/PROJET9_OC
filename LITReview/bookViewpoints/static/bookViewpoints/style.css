@@ -1,0 +1,10 @@
+body{
+    background-color: lightgrey;
+    color:black;
+    text-align:center;
+}
+
+header{
+    text-align:left;
+    background-color: lightsteelblue;
+}
