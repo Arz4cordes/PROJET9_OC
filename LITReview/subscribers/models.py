@@ -1,15 +1,13 @@
+from django.conf import settings
 from django.db import models
-from django.db.models.fields import CharField
 
-# Create your models here.
+# USER: django.contrib.auth.models.User
 
-class App_users(models.Model):
-    full_name = models.CharField(max_length=30)
-    user_password = CharField(max_length=25)
-    connected = False
-
-    def __str__(self):
-        return self.full_name
-
-class Follower(models.Model):
-    followed_by = models.ForeignKey(App_users, on_delete=models.CASCADE)
+class UserFollows(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                      related_name='following')
+    followed_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                                      related_name='followed_by')
+    
+    class Meta:
+        unique_together=('user','followed_user')

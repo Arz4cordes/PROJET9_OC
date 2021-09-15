@@ -1,13 +1,22 @@
-{% extends 'subscribers/main_page.html' %}
+{% extends 'subscribers/container_page.html' %}
 {% block mon_contenu %}
-    <div id="inscrire">
-        Inscrivez vous:
-        <!-- Bouton s'inscrire avec lien vers la page subscribe -->
-    </div>
+    <div id="two_column">
+        <p>
+            Inscrivez-vous:<br/>
+            <form method="POST" action="{% url 'subscribe' %} " name="vers_inscription">
+                {% csrf_token %}
+                <input type="submit" value="S'inscrire" />
+            </form>
+        </p>
+        <p>
+            Connectez vous:<br/>
+            <form method="POST" action="{% url 'to_bookViewpoints' %} " name="vers_bookViewpoints">
+                {% csrf_token %}
+                <input type="submit" value="Se connecter" />
+            </form>
 
-    <div id="connecter">
-        Connectez vous:
-        <!-- Champs nom_utilisateur, mdp, et bouton connexion avec lien vers flux,
-                et vérification de l'existance du user -->
+            <!-- Champs nom_utilisateur, mdp, et bouton connexion avec lien vers flux,
+                    et vérification de l'existance du user -->
+        </p>
     </div>
 {% endblock %}

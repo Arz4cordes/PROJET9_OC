@@ -1,8 +1,11 @@
-{% extends 'subscribers/main_page.html' %}
+{% extends 'subscribers/container_page.html' %}
 {% block mon_contenu %}
     <div id="inscription">
         Inscription:
         <!-- Champs nom_utilisateur, mdp, confirmation_mdp,
              et boutons retour, lien vers home_page et inscription, lien vers flux -->
     </div>>
+    <p>
+        <a href="{% url 'home_page' %}">Retour à l'accueil</a>
+    </p>
 {% endblock %}

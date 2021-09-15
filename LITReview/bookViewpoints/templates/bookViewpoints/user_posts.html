@@ -1,16 +1,17 @@
 {% extends 'bookViewPoints/container_page.html' %}
-{% load static %}
     {% block mon_contenu%}
-    <h2>FLUX</h2>
+    <h2>Mes posts</h2>
+    <h4>Mes 5 derniers tickets</h4>
     {% for ticket in tickets %}
-        Date: {{ ticket.times_created }} <br/>
+        Date: {{ ticket.time_created }} <br/>
         demandé par {{ ticket.user }} <br/>
         demande numéro {{ ticket.pk }} <br/>
         Nom du livre: {{ ticket.book_name.title }} <br/>
         Description: {{ ticket.description }} <br/> <br/>
     {% endfor %}
+    <h4>Mes 5 dernières critiques</h4>
     {% for review in reviews %}
-        Date: {{ review.times_created }} <br/>
+        Date: {{ review.time_created }} <br/>
         posté par {{ review.user }} <br/>
         critique numéro {{ review.pk }} <br/>
         Nom du livre: {{ review.book_name.title }} <br/>
@@ -20,7 +21,8 @@
         en réponse à la demande de: {{ review.ticket_ref.user }}
         <br/><br/>
     {% endfor %}
-        <!-- Boutons demander une critique et créer une critique
-                puis lister les 5 dernières infos -->
-                
+    <h4>Les posts plus anciens:
+        <!-- liste de tous les autres posts,
+             à afficher si il y a plus de 5 posts -->
+        </h4>
     {% endblock%}

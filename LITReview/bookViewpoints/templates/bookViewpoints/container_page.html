@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pages de l'utilisateur connecté</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+    <header>
+        <h1>LITReview</h1>
+        <p>
+            <ul>
+                <li><a href="{% url 'flow' %}">Flux</a></li>
+                <li><a href="{% url 'user_posts' %}">Posts</a></li>
+                <li><a href="{% url 'followers' %}">Abonnements</a></li>
+                <li>Déconnection</li>
+            </ul>
+        </p>
+    </header>
+
+    <section>
+        {% block mon_contenu %}
+        {% endblock %}
+    </section>
+</body>
+</html>
