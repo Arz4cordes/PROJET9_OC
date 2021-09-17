@@ -2,10 +2,13 @@
 {% block mon_contenu %}
     <div id="inscription">
         Inscription:
-        <!-- Champs nom_utilisateur, mdp, confirmation_mdp,
-             et boutons retour, lien vers home_page et inscription, lien vers flux -->
+        <form method="POST" action="{% url 'subscribers:home_page' %}">
+            {% csrf_token %}
+        {{ formulaire }}
+        <input type="submit"/>
+        </form>
     </div>>
     <p>
-        <a href="{% url 'home_page' %}">Retour à l'accueil</a>
+        <a href="{% url 'subscribers:login' %}">Retour à la page de connection</a>
     </p>
 {% endblock %}

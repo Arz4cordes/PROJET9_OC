@@ -31,8 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'subscribers.apps.SubscribersConfig',
-    'bookViewpoints.apps.BookviewpointsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,9 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'subscribers',
+    'bookViewpoints',
 ]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'bookViewpoints/images')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'LITReview/static/img')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -104,6 +104,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_URL = 'subscribers:login'
+
+LOGIN_REDIRECT_URL = 'bookViewpoints:flow'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

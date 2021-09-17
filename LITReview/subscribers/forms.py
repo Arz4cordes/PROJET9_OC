@@ -1,14 +1,20 @@
-from django.forms import ModelForm
-from django.conf import settings
+from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
 
-# ou bien:
-# from django.contrib.auth.models import AbstractUser
-# class User(AbstractUser):
-#    full_name = models.CharField(max_length=50)
-#    connected = True
-# USER: django.contrib.auth.models.User
+class ConnectionForm(forms.ModelForm):
 
-#class ConnectionForm(ModelForm):
-#    class Meta:
-#        model = settings.AUTH_USER_MODEL
-#        fields = ['username', 'password']
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+        labels = {
+            "username": "Nom de l'utilisateur",
+            "password": "Mot de passe"
+        }
+
+class PickyAuthenticationForm(AuthenticationForm):
+    def confirm_login_allowed(self, user):
+        if user.id < 5:
+            raise ValidationError(
+                _("id inférieur à 5."),
+                code='inactive',)

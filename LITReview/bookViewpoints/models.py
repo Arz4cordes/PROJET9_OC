@@ -29,7 +29,6 @@ class Ticket(models.Model):
     description = TextField(max_length=2048, blank=True)
     # image = FileField(upload_to='uploads/photos/%Y/%m/%d', null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    book_name = models.ForeignKey(Book, on_delete=models.CASCADE)
 
 
 class Review(models.Model):
@@ -39,5 +38,4 @@ class Review(models.Model):
              validators=[MinValueValidator(0),MaxValueValidator(5)])
     time_created = DateTimeField(auto_now_add=True)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    book_name = models.ForeignKey(Book, on_delete=models.CASCADE)
     ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)

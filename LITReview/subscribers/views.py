@@ -1,19 +1,17 @@
-from django.shortcuts import render
-# from subscribers.forms import ConnectionForm
-# Create your views here.
+from django.shortcuts import render, redirect
+from subscribers.forms import ConnectionForm
 
-def home_page(request):
-    return render(request, 'subscribers/home_page.html')
 
-#    if request.method == "GET":
-#        form = ConnectionForm()
-#        return render(request, 'subscribers/home_page.html', locals())
-#    else:
-#        form = "Pas de formulaire"
-#        return render(request, 'subscribers/home_page.html', {'form': form})
+def subscription(request):
+    # if request.user.is_authenticated:
+    #    return redirect('bookViewpoints:flow')
+    formulaire = ConnectionForm()
+    return render(request, 'subscribers/subscribe.html', locals())
 
-def subscribe_page(request):
-    return render(request, 'subscribers/subscribe.html')
-
-def bookViewpoints_pages(request):
-    return render(request, 'bookViewpoints/flow.html')
+def connected_page(request):
+        formulaire = ConnectionForm(request.POST)
+        if formulaire.is_valid():
+            formulaire.save()
+            subscription_done = True
+            return render(request, 'subscribers/login.html', locals())
+        

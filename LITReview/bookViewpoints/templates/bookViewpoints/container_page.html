@@ -12,11 +12,17 @@
         <h1>LITReview</h1>
         <p>
             <ul>
-                <li><a href="{% url 'flow' %}">Flux</a></li>
-                <li><a href="{% url 'user_posts' %}">Posts</a></li>
-                <li><a href="{% url 'followers' %}">Abonnements</a></li>
-                <li>Déconnection</li>
+                <li><a href="{% url 'bookViewpoints:flow' %}">Flux</a></li>
+                <li><a href="{% url 'bookViewpoints:user_posts' %}">Posts</a></li>
+                <li><a href="{% url 'bookViewpoints:followers' %}">Abonnements</a></li>
+                <li><a href="{% url 'subscribers:logout' %}">Déconnection</a></li>
             </ul>
+            
+            {% if user.is_authenticated %}
+                                        Connecté: {{ user.username }} - {{ user.email }} <br/>
+                {% else %}
+                   !! Page hors connexion !!
+                {% endif %}
         </p>
     </header>
 

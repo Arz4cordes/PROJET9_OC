@@ -1,0 +1,29 @@
+{% extends 'subscribers/container_page.html' %}
+{% block mon_contenu %}
+    {% if subscription_done %}
+    <p>Votre inscription a bien été prise en compe, merci.<br/>
+    Vous pouvez maintenant vous connecter au site avec vos identifiants.
+    </p>
+    {% endif %}
+    <div id="two_column">
+        <p>
+            Inscrivez-vous:
+        </p>
+        <p>
+            <form action="{% url 'subscribers:subscribe' %}" method="post" name="vers_inscription">
+                {% csrf_token %}
+                <button type="submit"> S'inscrire </button>
+            </form>
+        </p>
+
+           <h2>Connectez vous:</h2> 
+            <p>
+            <form action="{% url 'subscribers:login' %}" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Connexion"/>
+            </form>
+            </p>
+    
+    </div>
+{% endblock %}

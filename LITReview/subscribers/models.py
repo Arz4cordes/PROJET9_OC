@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.db import models
 
-# USER: django.contrib.auth.models.User
 
 class UserFollows(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,

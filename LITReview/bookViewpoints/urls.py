@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 
+app_name = 'bookViewpoints'
 # urls permettant d'accéder au flux (flow),
 # à la liste des abonnements (followers),
 # à la liste des posts de l'utilisateur (user_posts),

@@ -6,18 +6,16 @@
         Date: {{ ticket.times_created }} <br/>
         demandé par {{ ticket.user }} <br/>
         demande numéro {{ ticket.pk }} <br/>
-        Nom du livre: {{ ticket.book_name.title }} <br/>
         Description: {{ ticket.description }} <br/> <br/>
     {% endfor %}
     {% for review in reviews %}
         Date: {{ review.times_created }} <br/>
         posté par {{ review.user }} <br/>
         critique numéro {{ review.pk }} <br/>
-        Nom du livre: {{ review.book_name.title }} <br/>
         Titre de la critique: {{ review.headline }} <br/>
         Commentaire: {{ review.body }} <br/>
         Note: {{ review.rating }} <br/>
-        en réponse à la demande de: {{ review.ticket_ref.user }}
+        en réponse à la demande de: {{ review.ticket.user }}
         <br/><br/>
     {% endfor %}
         <!-- Boutons demander une critique et créer une critique
