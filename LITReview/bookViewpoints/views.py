@@ -1,7 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 
 from bookViewpoints.models import Review, Ticket
-from subscribers.models import UserFollows
 from bookViewpoints.forms import ReviewForm, TicketForm
 
 from django.utils import timezone
@@ -30,8 +29,8 @@ def subscriptions(request):
 
 def posts_list(request):
     if request.user.id is not None:
-        last_tickets = Ticket.objects.get(pk=request.user.id)
-        last_reviews = Review.objects.get(pk=request.user.id)
+        last_tickets = get_object_or_404(Ticket, pk=request.user.id)
+        last_reviews = get_object_or_404(Review, pk=request.user.id)
         return render(request, 'bookViewpoints/user_posts.html',
                       {'tickets': last_tickets, 'reviews': last_reviews})
     # récupérer les tickets et reviews de l'utilisateur

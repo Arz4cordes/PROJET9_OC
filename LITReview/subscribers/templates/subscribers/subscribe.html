@@ -2,7 +2,7 @@
 {% block mon_contenu %}
     <div id="inscription">
         Inscription:
-        <form method="POST" action="{% url 'subscribers:home_page' %}">
+        <form method="POST" action="{% url 'subscribers:subscribe' %}">
             {% csrf_token %}
         {{ formulaire }}
         <input type="submit"/>

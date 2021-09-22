@@ -1,17 +1,36 @@
 from django.shortcuts import render, redirect
-from subscribers.forms import ConnectionForm
-
+from subscribers.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import authenticate, login
 
 def subscription(request):
-    # if request.user.is_authenticated:
-    #    return redirect('bookViewpoints:flow')
-    formulaire = ConnectionForm()
-    return render(request, 'subscribers/subscribe.html', locals())
-
-def connected_page(request):
-        formulaire = ConnectionForm(request.POST)
+    if request.method == 'POST':
+        formulaire = UserCreationForm(request.POST)
         if formulaire.is_valid():
             formulaire.save()
-            subscription_done = True
-            return render(request, 'subscribers/login.html', locals())
-        
+            username = request.POST['username']
+            password = request.POST['password1']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('bookViewpoints:flow')
+            else:
+                formulaire = UserCreationForm()
+                return render(request, 'subscribers/subscribe.html', locals())
+    else:
+        formulaire = UserCreationForm()
+    return render(request, 'subscribers/subscribe.html', locals())
+
+def connexion(request):  
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        the_user = authenticate(request, username=username, password=password)
+        if the_user is not None:
+            login(request, the_user)
+            return redirect('bookViewpoints:flow')
+        else:
+            print("formulaire non valide")
+            return redirect('subscribers:login')
+    else:
+        form = AuthenticationForm()
+        return render(request,'subscribers/login.html',{'form':form})
