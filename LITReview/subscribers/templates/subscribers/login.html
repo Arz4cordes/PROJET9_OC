@@ -6,24 +6,18 @@
     </p>
     {% endif %}
     <div id="two_column">
-        <p>
-            Inscrivez-vous:
-        </p>
-        <p>
-            <form action="{% url 'subscribers:subscribe' %}" method="post" name="vers_inscription">
-                {% csrf_token %}
-                <button type="submit"> S'inscrire </button>
-            </form>
-        </p>
+        <h2> Inscrivez-vous: </h2>
+        
+        <div class="btn"><a href="{% url 'subscribers:subscribe' %}"> S'inscrire </a></div>    
 
            <h2>Connectez vous:</h2> 
-            <p>
+            
             <form action="{% url 'subscribers:login' %}" method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="submit" value="Connexion"/>
             </form>
-            </p>
+            
     
     </div>
 {% endblock %}

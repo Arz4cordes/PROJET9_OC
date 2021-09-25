@@ -1,20 +1,24 @@
 {% extends 'bookViewPoints/container_page.html' %}
     {% block mon_contenu%}
-    <p>Nouvelle critique</p>
-    <p>Vous êtes en train de répondre à 
-        <!-- nom du user qui a crée le ticket -->
-        <!-- afficher le ticket:
-             nom du user "a demandé le" date ticket
-             titre livre
-             image livre ou autre affichage
-             description ticket -->
-    </p>
+    <h2>Vous répondez au ticket suivant:</h2>
     <p>
+        Une critique a été demandée par {{ ticket.user }} (ticket numéro {{ ticket.pk }}) <br/>
+        le {{ ticket.times_created }}<br/>
+        Titre: {{ ticket.title}}<br/>
+        "{{ ticket.description }}" <br/>
+        Vous pouvez proposer votre réponse ci-dessous:<br/>
+    </p>
+    
+        <form  action="{% url 'bookViewpoints:ticket_answer' ticket_id=ticket.pk %}" method="post">
+            {% csrf_token %}
+            {{ formulaire.as_p }}
+            <input type="submit" value="Envoyer"/>
+        </form> 
         <!-- Titre et champ texte
              Description et champ description
              image et bouton télécharger un fichier
              titre critique et champ texte
              Note et 6 boutons radio
              commentaire et champ texte -->
-    </p>
+    
     {% endblock%}

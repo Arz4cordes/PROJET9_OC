@@ -14,6 +14,6 @@ path('flow/', views.even_flow, name='flow'),
 path('followers/', views.subscriptions, name='followers'),
 path('user_posts/', views.posts_list, name='user_posts'),
 path('new_review/', views.create_review, name='new_review'),
-path('ticket_answer/', views.ticket_to_review, name='ticket_answer'),
+path('ticket_answer//<int:ticket_id>', views.ticket_to_review, name='ticket_answer'),
 path('new_ticket/', views.create_ticket, name='new_ticket'),
 ]

@@ -1,23 +1,42 @@
 {% extends 'bookViewPoints/container_page.html' %}
 {% load static %}
     {% block mon_contenu%}
+    
+    <div class="btn">  <a href="{% url 'bookViewpoints:new_ticket' %}">Demander une critique</a> </div> 
+    <div class="btn">  <a href="{% url 'bookViewpoints:new_review' %}">Créer une critique</a> </div>
+
     <h2>FLUX</h2>
+    
     {% for ticket in tickets %}
-        Date: {{ ticket.times_created }} <br/>
-        demandé par {{ ticket.user }} <br/>
-        demande numéro {{ ticket.pk }} <br/>
-        Description: {{ ticket.description }} <br/> <br/>
+    <div class="posts">
+        Une critique a été demandée par {{ ticket.user }} (ticket numéro {{ ticket.pk }}) <br/>
+        {{ ticket.time_display }}<br/>
+        Titre: {{ ticket.title}}<br/>
+        "{{ ticket.description }}" <br/>
+        {% if not ticket.answer %}
+        <span class="btn">  <a href="{% url 'bookViewpoints:ticket_answer' ticket_id=ticket.pk %}">Répondre à ce ticket</a></span>
+        {% endif %}
+    </div>
     {% endfor %}
+    
+    
     {% for review in reviews %}
-        Date: {{ review.times_created }} <br/>
-        posté par {{ review.user }} <br/>
-        critique numéro {{ review.pk }} <br/>
-        Titre de la critique: {{ review.headline }} <br/>
-        Commentaire: {{ review.body }} <br/>
+    <div class="posts">
+    <p>Une critique a été postée par {{ review.user }} (critique numéro {{ review.pk }}) <br/>
+       le {{ review.time_display }} <br/>
+    </p>
+       <div class="response_to">en réponse à la demande de 
+       {{ review.ticket.user }} le {{ review.ticket.time_display }}<br/>
+        {{ review.ticket.title }}: "{{ review.ticket.description }}"<br/>
+       </div> 
+       <p>
+        Commentaire: {{ review.headline }} <br/>
+        {{ review.body }} <br/>
         Note: {{ review.rating }} <br/>
-        en réponse à la demande de: {{ review.ticket.user }}
-        <br/><br/>
+    </p>
+    </div>
     {% endfor %}
+    
         <!-- Boutons demander une critique et créer une critique
                 puis lister les 5 dernières infos -->
                 

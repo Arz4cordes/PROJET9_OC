@@ -1,10 +1,12 @@
 {% extends 'bookViewPoints/container_page.html' %}
     {% block mon_contenu%}
     <h2>Création d'une nouvelle critique</h2>
-    <p>
-        <form  action="{% url 'new_review' %}" method="post">
+    Veuillez renseigner tout d'abord un titre et une description pour le ticket,<br/>
+    puis proposez une réponse avec un commentaire et une note.<br/>
+        <form  action="{% url 'bookViewpoints:new_review' %}" method="post">
             {% csrf_token %}
-            {{ formulaire.as_p }}
+            {{ form_ticket.as_p }}
+            {{ form_review.as_p }}
             <input type="submit" value="Envoyer"/>
         </form>      
         <!-- Titre et champ texte
@@ -14,5 +16,5 @@
              Note et 6 boutons radio
              commentaire et champ texte
             bouton envoyer -->
-    </p>
+    
     {% endblock%}

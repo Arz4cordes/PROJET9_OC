@@ -16,6 +16,9 @@ def subscription(request):
             else:
                 formulaire = UserCreationForm()
                 return render(request, 'subscribers/subscribe.html', locals())
+        else:
+            print("Formulaire pour créer un compte:non valide")
+            return render(request, 'subscribers/subscribe.html', locals())
     else:
         formulaire = UserCreationForm()
     return render(request, 'subscribers/subscribe.html', locals())

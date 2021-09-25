@@ -10,7 +10,6 @@
 <body>
     <header>
         <h1>LITReview</h1>
-        <p>
             <ul>
                 <li><a href="{% url 'bookViewpoints:flow' %}">Flux</a></li>
                 <li><a href="{% url 'bookViewpoints:user_posts' %}">Posts</a></li>
@@ -19,11 +18,10 @@
             </ul>
             
             {% if user.is_authenticated %}
-                                        Connecté: {{ user.username }} - {{ user.email }} <br/>
+                                        Connecté: {{ user.username }} - a rejoint le groupe le {{ user.date_joined }} <br/>
                 {% else %}
                    !! Page hors connexion !!
                 {% endif %}
-        </p>
     </header>
 
     <section>
