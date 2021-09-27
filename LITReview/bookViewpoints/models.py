@@ -51,3 +51,11 @@ class Review(models.Model):
     time_created = DateTimeField(auto_now_add=True)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)
+
+    def time_display(self):
+        review_date = f"le {self.time_created.day}/"
+        review_date += f"{self.time_created.month}/"
+        review_date += f"{self.time_created.year} "
+        review_date += f"à {self.time_created.hour}h"
+        review_date += f"{self.time_created.minute}min "
+        return review_date

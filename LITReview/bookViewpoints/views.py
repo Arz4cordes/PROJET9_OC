@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-
+from django.db.models import Q
 from bookViewpoints.models import Review, Ticket
 from bookViewpoints.forms import ReviewForm, TicketForm
 from django.utils import timezone
@@ -14,6 +14,7 @@ def even_flow(request):
         les 5 derniers posts, ainsi que deux listes
         tickets_list et reviews_list classées par ordre chronologique
         """
+    # GERER L'ABSENCE DE TICKETS ou DE REVIEWS CI-DESSOUS
     last_tickets = Ticket.objects.filter(time_created__lte=timezone.now()).order_by('-time_created')[:5]
     last_reviews = Review.objects.filter(time_created__lte=timezone.now()).order_by('-time_created')[:5]
     dates_posts = []
@@ -45,21 +46,22 @@ def even_flow(request):
     return render(request, 'bookViewpoints/flow.html',
                   {'tickets': tickets_list, 'reviews': reviews_list})
 
-def subscriptions(request):
-    # récupérer les followers de l'user et les users que suit l'user
-    return render(request, 'bookViewpoints/followers.html')
-
-
 def posts_list(request):
     if request.user.id is not None:
-        last_tickets = get_object_or_404(Ticket, pk=request.user.id)
-        last_reviews = get_object_or_404(Review, pk=request.user.id)
+        last_tickets = Ticket.objects.filter(user=request.user)
+        last_reviews = Review.objects.filter(user=request.user)
         return render(request, 'bookViewpoints/user_posts.html',
                       {'tickets': last_tickets, 'reviews': last_reviews})
     # récupérer les tickets et reviews de l'utilisateur
     # puis les livres correspondants
     else:
         return render(request, 'bookViewpoints/user_posts.html')
+
+
+def subscriptions(request):
+    # récupérer les followers de l'user et les users que suit l'user
+    return render(request, 'bookViewpoints/followers.html')
+
 
 def create_review(request):
     if request.method == 'POST':
@@ -76,6 +78,8 @@ def create_review(request):
                 review.user = request.user
                 review.ticket = ticket_created
                 review.save()
+                ticket.answer = True
+                ticket.save()
         return redirect('bookViewpoints:flow')
     else:
         form_ticket = TicketForm()
@@ -93,13 +97,38 @@ def ticket_to_review(request, ticket_id):
             review.ticket = ticket
             review.save()
             ticket.answer = True
+            ticket.save()
             return redirect('bookViewpoints:flow')
         else:
             print("Formulaire pour une réponse au ticket: non valide")
             return render(request, 'bookViewpoints/ticket_answer.html', locals())
     else:
+        ticket = get_object_or_404(Ticket, pk=ticket_id)
         formulaire = ReviewForm()
-        return render(request, 'bookViewpoints/ticket_answer.html',locals())
+        return render(request, 'bookViewpoints/ticket_answer.html',
+                      {'formulaire': formulaire, 'ticket': ticket})
+
+def modify_review(request, review_id):
+    if request.method == 'POST':
+        formulaire = ReviewForm(request.POST)
+        if formulaire.is_valid():
+            review = formulaire.save(commit=False)
+            review.user = request.user
+            review.save()
+            return redirect('bookViewpoints:flow')
+        else:
+            print("Formulaire pour modifier une critique: non valide")
+    else:
+        review_to_update = get_object_or_404(Review, pk=review_id)
+        ticket = review_to_update.ticket
+        formulaire = ReviewForm(instance=review_to_update)
+        return render(request, 'bookViewpoints/update_review.html', locals())
+
+def del_review(request, review_id):
+    review = get_object_or_404(Review, pk=review_id)
+    review.delete()
+    return redirect('bookViewpoints:flow')
+
 
 def create_ticket(request):
     if request.method == 'POST':
@@ -115,3 +144,27 @@ def create_ticket(request):
     else:
         formulaire = TicketForm()
         return render(request, 'bookViewpoints/new_ticket.html', locals())
+
+def modify_ticket(request, ticket_id):
+    print("ARRIVEE DANS LA FONCTION MODIFY TICKET")
+    if request.method == 'POST':
+        formulaire = TicketForm(request.POST)
+        if formulaire.is_valid():
+            ticket = formulaire.save(commit=False) #ici le modèle est récupéré en sortie
+            ticket.user = request.user
+            ticket.save()
+            return redirect('bookViewpoints:flow')
+        else:
+            print("Formulaire pour modifier un ticket: non valide")
+    else:
+        print("TENTATIVE DE RECUPERATION D'OBJET")
+        print(ticket_id)
+        ticket_to_update = Ticket.objects.get(pk=ticket_id)
+        print("OBJET RECUPERE")
+        formulaire = TicketForm(instance=ticket_to_update)
+        return render(request, 'bookViewpoints/update_ticket.html', locals())
+
+def del_ticket(request, ticket_id):
+    ticket = get_object_or_404(Ticket, pk=ticket_id)
+    ticket.delete()
+    return redirect('bookViewpoints:flow')

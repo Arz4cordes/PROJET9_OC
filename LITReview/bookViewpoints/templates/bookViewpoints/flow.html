@@ -9,7 +9,7 @@
     
     {% for ticket in tickets %}
     <div class="posts">
-        Une critique a été demandée par {{ ticket.user }} (ticket numéro {{ ticket.pk }}) <br/>
+        Un ticket a été déposé par {{ ticket.user }} (ticket numéro {{ ticket.pk }}) <br/>
         {{ ticket.time_display }}<br/>
         Titre: {{ ticket.title}}<br/>
         "{{ ticket.description }}" <br/>
@@ -24,18 +24,17 @@
     <div class="posts">
     <p>Une critique a été postée par {{ review.user }} (critique numéro {{ review.pk }}) <br/>
        le {{ review.time_display }} <br/>
-    </p>
-       <div class="response_to">en réponse à la demande de 
-       {{ review.ticket.user }} le {{ review.ticket.time_display }}<br/>
-        {{ review.ticket.title }}: "{{ review.ticket.description }}"<br/>
-       </div> 
-       <p>
         Commentaire: {{ review.headline }} <br/>
         {{ review.body }} <br/>
         Note: {{ review.rating }} <br/>
     </p>
+        <div class="response_to">en réponse à la demande de 
+        {{ review.ticket.user }} le {{ review.ticket.time_display }}<br/>
+        {{ review.ticket.title }}: "{{ review.ticket.description }}"<br/>
+        </div> 
     </div>
     {% endfor %}
+
     
         <!-- Boutons demander une critique et créer une critique
                 puis lister les 5 dernières infos -->

@@ -3,23 +3,34 @@
     <h2>Mes posts</h2>
     <h4>Mes 5 derniers tickets</h4>
     {% for ticket in tickets %}
-        Date: {{ ticket.time_created }} <br/>
-        demandé par {{ ticket.user }} <br/>
-        demande numéro {{ ticket.pk }} <br/>
-        Nom du livre: {{ ticket.book_name.title }} <br/>
-        Description: {{ ticket.description }} <br/> <br/>
+    <div class="posts">
+        Un ticket a été déposé par {{ ticket.user }} (ticket numéro {{ ticket.pk }}) <br/>
+        {{ ticket.time_display }}<br/>
+        Titre: {{ ticket.title}}<br/>
+        "{{ ticket.description }}" <br/>
+        {% if not ticket.answer %}
+        <span class="btn">  <a href="{% url 'bookViewpoints:ticket_answer' ticket_id=ticket.pk %}">Répondre à ce ticket</a></span>
+        <span class="btn">  <a href="{% url 'bookViewpoints:update_ticket' ticket_id=ticket.pk %}">Modifier ce ticket</a></span>
+        <span class="btn">  <a href="{% url 'bookViewpoints:delete_ticket' ticket_id=ticket.pk %}">Supprimer ce ticket</a></span>
+        {% endif %}
+    </div>
     {% endfor %}
     <h4>Mes 5 dernières critiques</h4>
     {% for review in reviews %}
-        Date: {{ review.time_created }} <br/>
-        posté par {{ review.user }} <br/>
-        critique numéro {{ review.pk }} <br/>
-        Nom du livre: {{ review.book_name.title }} <br/>
-        Titre de la critique: {{ review.headline }} <br/>
-        Commentaire: {{ review.body }} <br/>
-        Note: {{ review.rating }} <br/>
-        en réponse à la demande de: {{ review.ticket_ref.user }}
-        <br/><br/>
+    <div class="posts">
+        <p>Une critique a été postée par {{ review.user }} (critique numéro {{ review.pk }}) <br/>
+           le {{ review.time_display }} <br/>
+            Commentaire: {{ review.headline }} <br/>
+            {{ review.body }} <br/>
+            Note: {{ review.rating }} <br/>
+            <span class="btn">  <a href="{% url 'bookViewpoints:update_review' review_id=review.pk %}">Modifier cette critique</a></span>
+            <span class="btn">  <a href="{% url 'bookViewpoints:delete_review' review_id=review.pk %}">Supprimer cette critique</a></span>
+        </p>
+            <div class="response_to">en réponse à la demande de 
+                {{ review.ticket.user }} le {{ review.ticket.time_display }}<br/>
+                 {{ review.ticket.title }}: "{{ review.ticket.description }}"<br/>
+            </div> 
+        </div>
     {% endfor %}
     <h4>Les posts plus anciens:
         <!-- liste de tous les autres posts,
