@@ -1,0 +1,21 @@
+{% extends 'bookViewPoints/container_page.html' %}
+    {% block mon_contenu%}
+    <div class="posts">
+        <p>Une critique a été postée par {{ review.user }} (critique numéro {{ review.pk }}) <br/>
+           le {{ review.time_display }} <br/>
+            Commentaire: {{ review.headline }} <br/>
+            {{ review.body }} <br/>
+            Note: {{ review.rating }} <br/>
+        </p>
+            <div class="response_to">en réponse à la demande de 
+            {{ review.ticket.user }} le {{ review.ticket.time_display }}<br/>
+            {{ review.ticket.title }}: "{{ review.ticket.description }}"<br/>
+            </div> 
+        </div>
+    <h2>Voulez vous vraiment effacer complètement cette critique ?</h2>
+    <p>
+        <span class="btn">  <a href="{% url 'bookViewpoints:delete_review' review_id=review.pk %}">OUI, le faire !</a></span>
+        <span class="btn">  <a href="{% url 'bookViewpoints:user_posts' %}">Non, je ne veux pas ...</a></span>
+    </p>
+
+    {% endblock%}

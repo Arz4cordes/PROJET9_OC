@@ -1,0 +1,15 @@
+{% extends 'bookViewPoints/container_page.html' %}
+    {% block mon_contenu%}
+    <div class="posts">
+        Un ticket a été déposé par {{ ticket.user }} (ticket numéro {{ ticket.pk }}) <br/>
+        {{ ticket.time_display }}<br/>
+        Titre: {{ ticket.title}}<br/>
+        "{{ ticket.description }}" <br/>
+    </div>
+    <h2>Voulez vous vraiment effacer complètement ce ticket ?</h2>
+    <p>
+        <span class="btn">  <a href="{% url 'bookViewpoints:delete_ticket' ticket_id=ticket.pk %}">OUI, le faire !</a></span>
+        <span class="btn">  <a href="{% url 'bookViewpoints:user_posts' %}">Non, je ne veux pas ...</a></span>
+    </p>
+
+    {% endblock%}

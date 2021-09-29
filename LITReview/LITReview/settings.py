@@ -108,6 +108,8 @@ AUTH_USER_MODEL = "subscribers.User"
 
 LOGIN_REDIRECT_URL = 'bookViewpoints:flow'
 
+LOGIN_URL = 'subscribers:login'
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 

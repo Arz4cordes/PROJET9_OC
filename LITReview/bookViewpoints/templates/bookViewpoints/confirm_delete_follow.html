@@ -1,0 +1,12 @@
+{% extends 'bookViewPoints/container_page.html' %}
+    {% block mon_contenu%}
+    <p>
+        Suppression de l'abonnement aux posts de {{ follower.followed_user }}
+    </p>>
+    <h2>Voulez vous vraiment supprimer cet abonnement ?</h2>
+    <p>
+        <span class="btn">  <a href="{% url 'bookViewpoints:delete_follow' follow_id=follower.pk %}">OUI, le faire !</a></span>
+        <span class="btn">  <a href="{% url 'bookViewpoints:followers' %}">Non, je ne veux pas ...</a></span>
+    </p>
+
+    {% endblock%}

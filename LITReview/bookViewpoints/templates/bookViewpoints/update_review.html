@@ -9,7 +9,7 @@
         Vous pouvez proposer votre réponse ci-dessous:<br/>
     </p>
     
-        <form  action="{% url 'bookViewpoints:ticket_answer' ticket_id=ticket.pk %}" method="post">
+        <form  action="{% url 'bookViewpoints:update_review' review_id=review_to_update.pk ticket_id=ticket.pk %}" method="post">
             {% csrf_token %}
             {{ formulaire.as_p }}
             <input type="submit" value="Envoyer"/>
