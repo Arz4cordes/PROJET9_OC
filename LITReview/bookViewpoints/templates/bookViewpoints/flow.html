@@ -2,40 +2,74 @@
 {% load static %}
     {% block mon_contenu%}
     
-    <div class="btn">  <a href="{% url 'bookViewpoints:new_ticket' %}">Demander une critique</a> </div> 
-    <div class="btn">  <a href="{% url 'bookViewpoints:new_review' %}">Créer une critique</a> </div>
+    <div class="btn_wrap">
+        <div class="btn">  <a href="{% url 'bookViewpoints:new_ticket' %}">Créer un ticket (demande de critique)</a> </div> 
+        <div class="btn">  <a href="{% url 'bookViewpoints:new_review' %}">Créer une nouvelle critique</a> </div>
+    </div>
 
     <h2>FLUX</h2>
+
+    {% for post in posts %}
+        {% if post.content_type == 'TICKET' %}
+        <div class="posts">
+            <div class="post_header">
+            <div class="post_ref">Un ticket a été déposé par {{ post.user }} (ticket numéro {{ post.pk }}) </div>
+            <div class="post_date">{{ post.time_display }}</div>
+            </div>
+            <span class="post_title">Titre:</span> {{ post.title}}<br/>
+            "{{ post.description }}" <br/>
+            {% if post.image.url is not null %}
+                <img src="{{ post.image.url }}" alt="image associée au ticket" title="image proposée" class="images" width="100" height=auto /><br/>
+            {% endif %}
+            {% if not post.answer %}
+                <div class="btn_wrap">
+                <span class="btn">  <a href="{% url 'bookViewpoints:ticket_answer' ticket_id=post.pk %}">Répondre à ce ticket</a></span>
+                </div>
+            {% endif %}
+        </div>
     
-    {% for ticket in tickets %}
-    <div class="posts">
-        Un ticket a été déposé par {{ ticket.user }} (ticket numéro {{ ticket.pk }}) <br/>
-        {{ ticket.time_display }}<br/>
-        Titre: {{ ticket.title}}<br/>
-        "{{ ticket.description }}" <br/>
-        {% if not ticket.answer %}
-        <span class="btn">  <a href="{% url 'bookViewpoints:ticket_answer' ticket_id=ticket.pk %}">Répondre à ce ticket</a></span>
+        {% elif post.content_type == 'REVIEW' %}
+        <div class="posts">
+            <div class="post_header">
+                <div class="post_ref">Une critique a été postée par {{ post.user }} (critique numéro {{ post.pk }}) </div>
+                <div class="post_date"> {{ post.time_display }} </div>
+            </div>
+            <span class="post_title">Commentaire:</span> {{ post.headline }} 
+            <span class="stars">
+            {% if post.rating == 0 %}
+            &#9734; &#9734; &#9734; &#9734; &#9734;
+            {% elif post.rating == 1 %}
+            &#9733; &#9734; &#9734; &#9734; &#9734;
+            {% elif post.rating == 2 %}
+            &#9733; &#9733; &#9734; &#9734; &#9734;
+            {% elif post.rating == 3 %}
+            &#9733; &#9733; &#9733; &#9734; &#9734;
+            {% elif post.rating == 4 %}
+            &#9733; &#9733; &#9733; &#9733; &#9734;
+            {% elif post.rating == 5 %}
+            &#9733; &#9733; &#9733; &#9733; &#9733;
+            {% endif %}
+            </span>
+            <br/>
+            {{ post.body }} <br/>
+            
+        </p>
+            <div class="response_to">
+                <div class="post_header">
+                    <div class="post_ref">en réponse à la demande de {{ post.ticket.user }} </div>
+                    <div class="post_date"> {{ post.ticket.time_display }}</div>
+                </div>
+                <span class="post_title"> {{ post.ticket.title }}: </span>"{{ post.ticket.description }}"<br/>
+            {% if post.ticket.image.url is not null %}
+                <img src="{{ post.ticket.image.url }}" alt="image associée au ticket" title="image proposée" class="images" width="100" height=auto /><br/>
+            {% endif %}
+            </div> 
+        </div>
         {% endif %}
-    </div>
-    {% endfor %}
     
-    
-    {% for review in reviews %}
-    <div class="posts">
-    <p>Une critique a été postée par {{ review.user }} (critique numéro {{ review.pk }}) <br/>
-       le {{ review.time_display }} <br/>
-        Commentaire: {{ review.headline }} <br/>
-        {{ review.body }} <br/>
-        Note: {{ review.rating }} <br/>
-    </p>
-        <div class="response_to">en réponse à la demande de 
-        {{ review.ticket.user }} le {{ review.ticket.time_display }}<br/>
-        {{ review.ticket.title }}: "{{ review.ticket.description }}"<br/>
-        </div> 
-    </div>
     {% endfor %}
 
-    
+
         <!-- Boutons demander une critique et créer une critique
                 puis lister les 5 dernières infos -->
                 

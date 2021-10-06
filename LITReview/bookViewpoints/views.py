@@ -1,12 +1,15 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.db.models import Q
+from django.db.models import CharField, Value
 from bookViewpoints.models import Review, Ticket
 from subscribers.models import UserFollows
 from bookViewpoints.forms import ReviewForm, TicketForm, FollowForm
 from django.utils import timezone
 from operator import itemgetter
 from django.contrib.auth.decorators import login_required
+from itertools import chain
 
+
+# VUES DES POSTS ET DES ABONNEMENTS
 @login_required
 def even_flow(request):
     """ récupération des 5 derniers tickets publiés
@@ -18,36 +21,19 @@ def even_flow(request):
     tickets_list et reviews_list classées par ordre chronologique
     """
     # GERER L'ABSENCE DE TICKETS ou DE REVIEWS CI-DESSOUS
-    last_tickets = Ticket.objects.filter(time_created__lte=timezone.now()).order_by('-time_created')[:5]
-    last_reviews = Review.objects.filter(time_created__lte=timezone.now()).order_by('-time_created')[:5]
-    dates_posts = []
-    the_type = 1
-    for ticket in last_tickets:
-        the_date = str(ticket.time_created)
-        identification = ticket.pk
-        dates_posts.append([the_date, the_type, identification])
-    the_type = 2
-    for review in last_reviews:
-        the_date = str(review.time_created)
-        identification = review.pk
-        dates_posts.append([the_date, the_type, identification])
-    dates_arranged = sorted(dates_posts, key=itemgetter(0), reverse=True)
-    dates_list = dates_arranged[:5]
-    tickets_list = []
-    reviews_list = []
-    i = 0
-    j = 0
-    for a_date in dates_list:
-        if a_date[1] == 1:
-            if i < len(last_tickets):
-                tickets_list.append(last_tickets[i])
-                i += 1
-        else:
-            if j < len(last_reviews):
-                reviews_list.append(last_reviews[j])
-                j += 1
+    user_follow = UserFollows.objects.filter(user=request.user)
+    user_follows_id = []
+    for item in user_follow:
+        user_follows_id.append(item.followed_user.pk)
+    tickets = Ticket.objects.filter(user__pk__in=user_follows_id)
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+    reviews = Review.objects.filter(user__pk__in=user_follows_id)
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+    posts = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
+    for post in posts:
+        print(post.time_created)
     return render(request, 'bookViewpoints/flow.html',
-                  {'tickets': tickets_list, 'reviews': reviews_list})
+                  {'posts': posts})
 
 @login_required
 def posts_list(request):
@@ -98,6 +84,7 @@ def add_follow(request):
             print("Formulaire pour un nouvel abonnement: non valide")
             return render(request, 'bookViewpoints/followers.html', locals())
 
+# VUES CONCERNANT LES TICKETS
 @login_required
 def create_ticket(request):
     """ Crée une instance de formulaire Ticket,
@@ -106,7 +93,7 @@ def create_ticket(request):
     récupère l'objet Ticket, ajoute son attribut user et enregistre dans la BDD le ticket
     """
     if request.method == 'POST':
-        formulaire = TicketForm(request.POST)
+        formulaire = TicketForm(request.POST, request.FILES)
         if formulaire.is_valid():
             ticket = formulaire.save(commit=False) #ici le modèle est récupéré en sortie
             ticket.user = request.user
@@ -158,6 +145,7 @@ def del_ticket(request, ticket_id):
     ticket_to_delete.delete()
     return redirect('bookViewpoints:user_posts')
 
+# VUES CONCERNANT LES CRITIQUES
 @login_required
 def create_review(request):
     """ Crée des instances de formulaires Ticket et Review

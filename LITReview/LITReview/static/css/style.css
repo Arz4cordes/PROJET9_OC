@@ -38,6 +38,37 @@ p{
     margin:5px;
 }
 
+.post_header
+{
+    display:flex;
+    justify-content: space-between;
+    margin-bottom:10px;
+}
+
+
+.post_ref
+{
+    text-align: left;
+    font-style: italic;
+}
+
+.post_date
+{
+    text-align: right;
+}
+
+.post_title
+{
+    text-decoration: underline;
+}
+
+.images
+{
+    margin-top:5px;
+    border: solid 1px rgb(68, 67, 67);
+	box-shadow: 2px 2px 6px black;
+}
+
 ul{
     display:flex;
     flex-direction: column;
@@ -70,12 +101,21 @@ h4{
     text-decoration: underline;
 }
 
+.btn_wrap
+{
+    margin-top:10px;
+    display:flex;
+    justify-content: center;
+}
+
 .btn
 {
-    margin:10px;
     background-color: lightgray;
     border:black solid 2px;
     max-height:20px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 2px;
 }
 
 .response_to
@@ -85,6 +125,13 @@ h4{
     border:black solid 1px;
 	border-radius:8px;
     box-shadow: 4px 4px 6px black;
+}
+
+.stars
+{
+    margin-left:20px;
+    border:black solid 1px;
+    border-radius:4px;
 }
 
 a

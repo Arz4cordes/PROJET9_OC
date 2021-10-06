@@ -2,11 +2,12 @@
     {% block mon_contenu%}
     <h2>Création d'un nouveau ticket</h2>
     
-        <form  action="{% url 'bookViewpoints:new_ticket' %}" method="post">
+        <form  action="{% url 'bookViewpoints:new_ticket' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ formulaire.as_p }}
             <input type="submit" value="Envoyer"/>
         </form>  
+
         <!-- Titre et champ texte
              Description et champ description
              image et bouton télécharger un fichier

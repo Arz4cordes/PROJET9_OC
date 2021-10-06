@@ -42,7 +42,11 @@ INSTALLED_APPS = [
     'bookViewpoints',
 ]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'LITReview/static/img')
+# Les images seront téléchargées ici
+MEDIA_ROOT = os.path.join(BASE_DIR, 'LITReview/static/medias')
+
+# URL correspondant à une image
+MEDIA_URL = '/img/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

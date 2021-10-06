@@ -16,9 +16,10 @@ class ReviewForm(ModelForm):
 class TicketForm(ModelForm):
     class Meta:
         model = Ticket
-        fields = ['title', 'description']
+        fields = ['title', 'description', 'image']
         labels = {"title": "Titre du livre",
                   "description": "Description du livre"}
+
 
 class FollowForm(ModelForm):
     class Meta:

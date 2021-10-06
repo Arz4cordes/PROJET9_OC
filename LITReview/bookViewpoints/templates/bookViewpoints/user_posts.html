@@ -1,34 +1,66 @@
 {% extends 'bookViewPoints/container_page.html' %}
     {% block mon_contenu%}
     <h2>Mes posts</h2>
-    <h4>Mes 5 derniers tickets</h4>
+    <h4>Mes tickets</h4>
     {% for ticket in tickets %}
     <div class="posts">
-        Un ticket a été déposé par {{ ticket.user }} (ticket numéro {{ ticket.pk }}) <br/>
-        {{ ticket.time_display }}<br/>
-        Titre: {{ ticket.title}}<br/>
+        <div class="post_header">
+            <div class="post_ref">Un ticket a été déposé par {{ ticket.user }} (ticket numéro {{ ticket.pk }}) </div>
+            <div class="post_date">{{ ticket.time_display }}</div>
+        </div>
+        <span class="post_title">Titre: </span>{{ ticket.title}}<br/>
         "{{ ticket.description }}" <br/>
+        {% if ticket.image.url is not null %}
+            <img src="{{ ticket.image.url }}" alt="image associée au ticket" title="image proposée" class="images" width="100" height=auto /><br/>
+        {% endif %}
+        <div class="btn_wrap">
         {% if not ticket.answer %}
         <span class="btn">  <a href="{% url 'bookViewpoints:ticket_answer' ticket_id=ticket.pk %}">Répondre à ce ticket</a></span>
         {% endif %}
         <span class="btn">  <a href="{% url 'bookViewpoints:update_ticket' ticket_id=ticket.pk %}">Modifier ce ticket</a></span>
         <span class="btn">  <a href="{% url 'bookViewpoints:delete_ticket_to_confirm' ticket_id=ticket.pk %}">Supprimer ce ticket</a></span>
+        </div>
     </div>
     {% endfor %}
-    <h4>Mes 5 dernières critiques</h4>
+    <h4>Mes critiques</h4>
     {% for review in reviews %}
     <div class="posts">
-        <p>Une critique a été postée par {{ review.user }} (critique numéro {{ review.pk }}) <br/>
-           le {{ review.time_display }} <br/>
-            Commentaire: {{ review.headline }} <br/>
-            {{ review.body }} <br/>
-            Note: {{ review.rating }} <br/>
+        <div class="post_header">
+            <div class="post_ref">Une critique a été postée par {{ review.user }} (critique numéro {{ review.pk }}) </div>
+            <div class="post_date"> {{ review.time_display }} </div>
+        </div>
+        <span class="post_title">Commentaire:</span> {{ review.headline }} 
+        <span class="stars">
+        {% if review.rating == 0 %}
+            &#9734; &#9734; &#9734; &#9734; &#9734;
+            {% elif review.rating == 1 %}
+            &#9733; &#9734; &#9734; &#9734; &#9734;
+            {% elif review.rating == 2 %}
+            &#9733; &#9733; &#9734; &#9734; &#9734;
+            {% elif review.rating == 3 %}
+            &#9733; &#9733; &#9733; &#9734; &#9734;
+            {% elif review.rating == 4 %}
+            &#9733; &#9733; &#9733; &#9733; &#9734;
+            {% elif review.rating == 5 %}
+            &#9733; &#9733; &#9733; &#9733; &#9733;
+            {% endif %}
+        </span>
+        <br/>
+        {{ review.body }} <br/>
+        
+        <div class="btn_wrap">
             <span class="btn">  <a href="{% url 'bookViewpoints:update_review' review_id=review.pk ticket_id=review.ticket.pk %}">Modifier cette critique</a></span>
             <span class="btn">  <a href="{% url 'bookViewpoints:delete_review_to_confirm' review_id=review.pk %}">Supprimer cette critique</a></span>
-        </p>
-            <div class="response_to">en réponse à la demande de 
-                {{ review.ticket.user }} le {{ review.ticket.time_display }}<br/>
-                 {{ review.ticket.title }}: "{{ review.ticket.description }}"<br/>
+        </div>
+            <div class="response_to">
+                <div class="post_header">
+                    <div class="post_ref">en réponse à la demande de {{ review.ticket.user }}</div>
+                    <div class="post_date"> {{ review.ticket.time_display }}</div>
+                </div>
+                <span class="post_title">{{ review.ticket.title }}:</span> "{{ review.ticket.description }}"<br/>
+                 {% if ticket.image.url is not null %}
+            <img src="{{ ticket.image.url }}" alt="image associée au ticket" title="image proposée" class="images" width="100" height=auto /><br/>
+        {% endif %}
             </div> 
         </div>
     {% endfor %}
