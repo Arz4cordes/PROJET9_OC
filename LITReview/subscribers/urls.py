@@ -10,10 +10,7 @@ app_name = 'subscribers'
 
 # créer sa propre vue connection avec la condition is_authenticate
 urlpatterns = [
-path('login/', views.connexion, name='login'),
-path('subscribe/', views.subscription, name='subscribe'),
-path('logout/', auth_views.LogoutView.as_view(template_name='subscribers/logout.html'), name='logout'),
+    path('login/', views.connexion, name='login'),
+    path('subscribe/', views.subscription, name='subscribe'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='subscribers/logout.html'), name='logout'),
 ]
-
-
-# fonction django par défaut auth_views.LoginView.as_view(template_name='subscribers/login.html') dans urlpatterns

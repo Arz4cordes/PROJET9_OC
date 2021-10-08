@@ -3,8 +3,6 @@ from django.db.models import CharField, Value
 from bookViewpoints.models import Review, Ticket
 from subscribers.models import UserFollows
 from bookViewpoints.forms import ReviewForm, TicketForm, FollowForm
-from django.utils import timezone
-from operator import itemgetter
 from django.contrib.auth.decorators import login_required
 from itertools import chain
 
@@ -12,15 +10,14 @@ from itertools import chain
 # VUES DES POSTS ET DES ABONNEMENTS
 @login_required
 def even_flow(request):
-    """ récupération des 5 derniers tickets publiés
-    et des 5 dernières critiques publiées, puis
-    classement des 5 dernières dates dans une liste
-    contenant un trinome (date, type de post, id du post),
-    :return: chemin vers le template qui affiche
-    les 5 derniers posts, et envoie deux listes
-    tickets_list et reviews_list classées par ordre chronologique
+    """ récupération des id des utilisateurs existants
+    que l'user connecté suit,
+    puis récupération des tickets et des critiques de ces utilisateurs
+    en ajoutant un attribut 'ticket' ou 'critique' aux posts
+    et enfin classement des posts par ordre chronologique inversé
+    :return: chemin vers le template qui affiche les posts
+    des utilisateurs suivis par le user connecté
     """
-    # GERER L'ABSENCE DE TICKETS ou DE REVIEWS CI-DESSOUS
     user_follow = UserFollows.objects.filter(user=request.user)
     user_follows_id = []
     for item in user_follow:
@@ -30,10 +27,9 @@ def even_flow(request):
     reviews = Review.objects.filter(user__pk__in=user_follows_id)
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
     posts = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
-    for post in posts:
-        print(post.time_created)
     return render(request, 'bookViewpoints/flow.html',
                   {'posts': posts})
+
 
 @login_required
 def posts_list(request):
@@ -52,27 +48,40 @@ def posts_list(request):
     else:
         return render(request, 'bookViewpoints/user_posts.html')
 
+
 @login_required
 def subscriptions(request):
-    # récupérer les followers de l'user et les users que suit l'user
+    """ récupére les followers de l'user connecté
+    et les utilisateurs que suit l'user connecté
+    """
     actually_follow = UserFollows.objects.filter(user=request.user)
     my_followers = UserFollows.objects.filter(followed_user=request.user)
     formulaire = FollowForm()
     return render(request, 'bookViewpoints/followers.html', locals())
 
+
 @login_required
 def confirm_delete_follow(request, follow_id):
+    """ récupère un utilisateur de la liste que l'user connecté suit
+    et renvoie vers une page de confirmation de la suppression
+    """
     follower = get_object_or_404(UserFollows, pk=follow_id)
     return render(request, 'bookViewpoints/confirm_delete_follow.html', locals())
 
+
 @login_required
 def del_follow(request, follow_id):
+    """ récupère et supprime un utilisateur
+    de la liste que l'user connecté suit
+    """
     follower = get_object_or_404(UserFollows, pk=follow_id)
     follower.delete()
     return redirect('bookViewpoints:followers')
 
+
 @login_required
 def add_follow(request):
+    """ traite un formulaire d'ajout d'un abonné """
     if request.method == 'POST':
         formulaire = FollowForm(request.POST)
         if formulaire.is_valid():
@@ -83,6 +92,7 @@ def add_follow(request):
         else:
             print("Formulaire pour un nouvel abonnement: non valide")
             return render(request, 'bookViewpoints/followers.html', locals())
+
 
 # VUES CONCERNANT LES TICKETS
 @login_required
@@ -95,7 +105,8 @@ def create_ticket(request):
     if request.method == 'POST':
         formulaire = TicketForm(request.POST, request.FILES)
         if formulaire.is_valid():
-            ticket = formulaire.save(commit=False) #ici le modèle est récupéré en sortie
+            ticket = formulaire.save(commit=False)
+            # ici le modèle est récupéré en sortie
             ticket.user = request.user
             ticket.save()
             return redirect('bookViewpoints:flow')
@@ -105,6 +116,7 @@ def create_ticket(request):
     else:
         formulaire = TicketForm()
         return render(request, 'bookViewpoints/new_ticket.html', locals())
+
 
 @login_required
 def modify_ticket(request, ticket_id):
@@ -120,7 +132,7 @@ def modify_ticket(request, ticket_id):
     if request.method == 'POST':
         formulaire = TicketForm(request.POST, instance=ticket_to_update)
         if formulaire.is_valid():
-            ticket = formulaire.save(commit=False) #ici le modèle est récupéré en sortie
+            ticket = formulaire.save(commit=False)
             ticket.user = request.user
             ticket.save()
             return redirect('bookViewpoints:flow')
@@ -130,13 +142,21 @@ def modify_ticket(request, ticket_id):
         formulaire = TicketForm(instance=ticket_to_update)
         return render(request, 'bookViewpoints/update_ticket.html', locals())
 
+
 @login_required
 def confirm_delete_ticket(request, ticket_id):
+    """ récupère un ticket à supprimer
+    et renvoie vers une page de confirmation de la suppression
+    """
     ticket = get_object_or_404(Ticket, pk=ticket_id)
     return render(request, 'bookViewpoints/confirm_delete_ticket.html', locals())
 
+
 @login_required
 def del_ticket(request, ticket_id):
+    """ récupère un ticket à supprimer de la BDD,
+    vérifie si il avait une réponse associée (pour la supprimer aussi),
+    et supprime le ticket de la BDD"""
     ticket_to_delete = get_object_or_404(Ticket, pk=ticket_id)
     if ticket_to_delete.answer:
         review = Review.objects.filter(ticket=ticket_to_delete)
@@ -144,6 +164,7 @@ def del_ticket(request, ticket_id):
             review.delete()
     ticket_to_delete.delete()
     return redirect('bookViewpoints:user_posts')
+
 
 # VUES CONCERNANT LES CRITIQUES
 @login_required
@@ -177,6 +198,7 @@ def create_review(request):
         form_review = ReviewForm()
         return render(request, 'bookViewpoints/new_review.html', locals())
 
+
 @login_required
 def ticket_to_review(request, ticket_id):
     """ Récupère l'objet Ticket auquel on veut répondre, crée une instance du formulaire Review,
@@ -206,6 +228,7 @@ def ticket_to_review(request, ticket_id):
         return render(request, 'bookViewpoints/ticket_answer.html',
                       {'formulaire': formulaire, 'ticket': ticket})
 
+
 @login_required
 def modify_review(request, review_id, ticket_id):
     """ recupère l'objet Ticket auquel l'objet Review est associé,
@@ -234,13 +257,23 @@ def modify_review(request, review_id, ticket_id):
         formulaire = ReviewForm(instance=review_to_update)
         return render(request, 'bookViewpoints/update_review.html', locals())
 
+
 @login_required
 def confirm_delete_review(request, review_id):
+    """ récupère une critique à supprimer,
+    et renvoie vers une page de confirmation de la suppression
+    """
     review = get_object_or_404(Review, pk=review_id)
     return render(request, 'bookViewpoints/confirm_delete_review.html', locals())
 
+
 @login_required
 def del_review(request, review_id):
+    """ récupère une critique à supprimer de la BDD,
+    remet à 'False' la réponse au ticket correspondant,
+    supprime la critique de la BDD,
+    et met à jour le ticket correspondant
+    """
     review = get_object_or_404(Review, pk=review_id)
     ticket = review.ticket
     review.delete()

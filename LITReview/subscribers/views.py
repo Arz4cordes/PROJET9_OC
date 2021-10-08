@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from subscribers.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login
 
+
 def subscription(request):
     if request.method == 'POST':
         formulaire = UserCreationForm(request.POST)
@@ -23,7 +24,8 @@ def subscription(request):
         formulaire = UserCreationForm()
     return render(request, 'subscribers/subscribe.html', locals())
 
-def connexion(request):  
+
+def connexion(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -36,4 +38,4 @@ def connexion(request):
             return redirect('subscribers:login')
     else:
         form = AuthenticationForm()
-        return render(request,'subscribers/login.html',{'form':form})
+        return render(request, 'subscribers/login.html', {'form': form})

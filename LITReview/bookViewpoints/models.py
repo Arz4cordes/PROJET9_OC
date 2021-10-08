@@ -16,7 +16,6 @@ class Ticket(models.Model):
     image = models.ImageField(upload_to='uploads/photos/%Y/%m/%d', null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
-
     def time_display(self):
         ticket_date = f"le {self.time_created.day}/"
         ticket_date += f"{self.time_created.month}/"
@@ -30,7 +29,7 @@ class Review(models.Model):
     headline = CharField(max_length=128, default='Titre de la critique')
     body = TextField(max_length=8192, blank=True)
     rating = PositiveSmallIntegerField(default=0,
-             validators=[MinValueValidator(0),MaxValueValidator(5)])
+                                       validators=[MinValueValidator(0), MaxValueValidator(5)])
     time_created = DateTimeField(auto_now_add=True)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)

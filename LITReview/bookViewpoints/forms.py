@@ -2,6 +2,7 @@ from django.forms import ModelForm
 from bookViewpoints.models import Review, Ticket
 from subscribers.models import UserFollows
 
+
 class ReviewForm(ModelForm):
     class Meta:
         model = Review
@@ -12,6 +13,7 @@ class ReviewForm(ModelForm):
             "body": "Commentaires",
             "rating": "Note (sur 5)"
         }
+
 
 class TicketForm(ModelForm):
     class Meta:
