@@ -10,6 +10,7 @@
         </div>
         <span class="post_title">Titre: </span>{{ ticket.title}}<br/>
         "{{ ticket.description }}" <br/>
+        
         {% if ticket.image.url is not null %}
             <img src="{{ ticket.image.url }}" alt="image associée au ticket" title="image proposée" class="images" width="100" height=auto /><br/>
         {% endif %}
@@ -58,8 +59,8 @@
                     <div class="post_date"> {{ review.ticket.time_display }}</div>
                 </div>
                 <span class="post_title">{{ review.ticket.title }}:</span> "{{ review.ticket.description }}"<br/>
-                 {% if ticket.image.url is not null %}
-            <img src="{{ ticket.image.url }}" alt="image associée au ticket" title="image proposée" class="images" width="100" height=auto /><br/>
+                 {% if review.ticket.image.url is not null %}
+            <img src="{{ review.ticket.image.url }}" alt="image associée au ticket" title="image proposée" class="images" width="100" height=auto /><br/>
         {% endif %}
             </div> 
         </div>

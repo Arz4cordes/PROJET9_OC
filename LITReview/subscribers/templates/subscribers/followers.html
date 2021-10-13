@@ -1,0 +1,29 @@
+{% extends 'bookViewPoints/container_page.html' %}
+    {% block mon_contenu%}
+    <h2>Abonnements</h2>
+    <p>Suivre d'autres utilisateurs:
+        <!-- champ texte avec nom utilisateur et bouton envoyer -->
+    </p>
+    <form action="{% url 'subscribers:add_new_follow' %}" method='post'>
+        {% csrf_token %}
+        {{ formulaire.as_p }}
+        <input type="submit" value="Envoyer">
+    </form>
+    
+    <h4>Abonnements en cours:</h4>
+        <!-- liste d'utilisateurs avec bouton désabonnement à côté -->
+    <div class="followers_screen">
+        {% for follower in actually_follow %}
+        {{ follower.followed_user }} | 
+        <span class="btn">  <a href="{% url 'subscribers:delete_follow_to_confirm' follow_id=follower.pk %}">Se désabonner</a></span>
+        {% endfor %}
+    </div>
+    
+    <h4>Abonnés:</h4>
+    <div class="followers_screen">
+        <!-- Liste des users qui suivent l'utilisateur -->
+        {% for follower in my_followers %}
+        {{ follower.user }} </br>
+        {% endfor %}
+    </div>
+    {% endblock%}

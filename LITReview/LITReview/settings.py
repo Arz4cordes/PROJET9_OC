@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 ]
 
 # Les images seront téléchargées ici
-MEDIA_ROOT = os.path.join(BASE_DIR, 'LITReview/static/medias')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/img')
 
 # URL correspondant à une image
 MEDIA_URL = '/img/'

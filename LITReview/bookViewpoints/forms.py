@@ -21,10 +21,3 @@ class TicketForm(ModelForm):
         fields = ['title', 'description', 'image']
         labels = {"title": "Titre du livre",
                   "description": "Description du livre"}
-
-
-class FollowForm(ModelForm):
-    class Meta:
-        model = UserFollows
-        fields = ['followed_user']
-        labels = {"followed_user": "Cherchez un utilisateur à suivre"}

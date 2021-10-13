@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.db.models import CharField, Value
 from bookViewpoints.models import Review, Ticket
 from subscribers.models import UserFollows
-from bookViewpoints.forms import ReviewForm, TicketForm, FollowForm
+from bookViewpoints.forms import ReviewForm, TicketForm
 from django.contrib.auth.decorators import login_required
 from itertools import chain
 
@@ -49,51 +49,6 @@ def posts_list(request):
         return render(request, 'bookViewpoints/user_posts.html')
 
 
-@login_required
-def subscriptions(request):
-    """ récupére les followers de l'user connecté
-    et les utilisateurs que suit l'user connecté
-    """
-    actually_follow = UserFollows.objects.filter(user=request.user)
-    my_followers = UserFollows.objects.filter(followed_user=request.user)
-    formulaire = FollowForm()
-    return render(request, 'bookViewpoints/followers.html', locals())
-
-
-@login_required
-def confirm_delete_follow(request, follow_id):
-    """ récupère un utilisateur de la liste que l'user connecté suit
-    et renvoie vers une page de confirmation de la suppression
-    """
-    follower = get_object_or_404(UserFollows, pk=follow_id)
-    return render(request, 'bookViewpoints/confirm_delete_follow.html', locals())
-
-
-@login_required
-def del_follow(request, follow_id):
-    """ récupère et supprime un utilisateur
-    de la liste que l'user connecté suit
-    """
-    follower = get_object_or_404(UserFollows, pk=follow_id)
-    follower.delete()
-    return redirect('bookViewpoints:followers')
-
-
-@login_required
-def add_follow(request):
-    """ traite un formulaire d'ajout d'un abonné """
-    if request.method == 'POST':
-        formulaire = FollowForm(request.POST)
-        if formulaire.is_valid():
-            user_follow = formulaire.save(commit=False)
-            user_follow.user = request.user
-            user_follow.save()
-            return redirect('bookViewpoints:followers')
-        else:
-            print("Formulaire pour un nouvel abonnement: non valide")
-            return render(request, 'bookViewpoints/followers.html', locals())
-
-
 # VUES CONCERNANT LES TICKETS
 @login_required
 def create_ticket(request):
@@ -109,7 +64,7 @@ def create_ticket(request):
             # ici le modèle est récupéré en sortie
             ticket.user = request.user
             ticket.save()
-            return redirect('bookViewpoints:flow')
+            return redirect('bookViewpoints:user_posts')
         else:
             print("Formulaire pour un nouveau ticket: non valide")
             return render(request, 'bookViewpoints/new_ticket.html', locals())
@@ -130,12 +85,12 @@ def modify_ticket(request, ticket_id):
     """
     ticket_to_update = Ticket.objects.get(pk=ticket_id)
     if request.method == 'POST':
-        formulaire = TicketForm(request.POST, instance=ticket_to_update)
+        formulaire = TicketForm(request.POST, request.FILES, instance=ticket_to_update)
         if formulaire.is_valid():
             ticket = formulaire.save(commit=False)
             ticket.user = request.user
             ticket.save()
-            return redirect('bookViewpoints:flow')
+            return redirect('bookViewpoints:user_posts')
         else:
             print("Formulaire pour modifier un ticket: non valide")
     else:
@@ -177,7 +132,7 @@ def create_review(request):
     enregistre la critique dans la BDD et met à jour l'attribut answer du ticket
     """
     if request.method == 'POST':
-        form_ticket = TicketForm(request.POST)
+        form_ticket = TicketForm(request.POST, request.FILES)
         form_review = ReviewForm(request.POST)
         if form_ticket.is_valid():
             ticket = form_ticket.save(commit=False)
@@ -192,7 +147,7 @@ def create_review(request):
                 review.save()
                 ticket.answer = True
                 ticket.save()
-        return redirect('bookViewpoints:flow')
+        return redirect('bookViewpoints:user_posts')
     else:
         form_ticket = TicketForm()
         form_review = ReviewForm()
@@ -218,7 +173,7 @@ def ticket_to_review(request, ticket_id):
             review.save()
             ticket.answer = True
             ticket.save()
-            return redirect('bookViewpoints:flow')
+            return redirect('bookViewpoints:user_posts')
         else:
             print("Formulaire pour une réponse au ticket: non valide")
             return render(request, 'bookViewpoints/ticket_answer.html', locals())
@@ -249,7 +204,7 @@ def modify_review(request, review_id, ticket_id):
             review.user = request.user
             review.ticket = ticket
             review.save()
-            return redirect('bookViewpoints:flow')
+            return redirect('bookViewpoints:user_posts')
         else:
             print("Formulaire pour modifier une critique: non valide")
     else:

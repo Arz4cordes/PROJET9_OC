@@ -1,5 +1,6 @@
 from django.urls import path
-
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 app_name = 'bookViewpoints'
@@ -9,9 +10,9 @@ app_name = 'bookViewpoints'
 # à la création d'une critique sur un nouveau livre (new_review),
 # à la création d'une critique en réponse à un ticket (ticket_answer),
 # et à la création d'un ticket (new_ticket)
+
 urlpatterns = [
     path('flow/', views.even_flow, name='flow'),
-    path('followers/', views.subscriptions, name='followers'),
     path('user_posts/', views.posts_list, name='user_posts'),
     path('new_review/', views.create_review, name='new_review'),
     path('ticket_answer/<int:ticket_id>/', views.ticket_to_review, name='ticket_answer'),
@@ -22,7 +23,4 @@ urlpatterns = [
     path('delete_review_to_confirm/<int:review_id>/', views.confirm_delete_review, name='delete_review_to_confirm'),
     path('delete_ticket/<int:ticket_id>/', views.del_ticket, name='delete_ticket'),
     path('delete_review/<int:review_id>/', views.del_review, name='delete_review'),
-    path('delete_follow_to_confirm/<int:follow_id>/', views.confirm_delete_follow, name='delete_follow_to_confirm'),
-    path('delete_follow/<int:follow_id>/', views.del_follow, name='delete_follow'),
-    path('add_new_follow/', views.add_follow, name='add_new_follow'),
 ]
